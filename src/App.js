@@ -1,9 +1,12 @@
-import "./App.css"
-import index from './index'
-
+import './App.css'
+import Counter from './redux/features/counter/Counter'
 
 function App() {
-  return <div className="App"></div>
+  return (
+    <div className="App">
+      <Counter />
+    </div>
+  )
 }
 
 export default App
