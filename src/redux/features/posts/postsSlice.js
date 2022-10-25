@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { nanoid } from '@reduxjs/toolkit'
-import { format } from 'timeago.js'
+
 
 const initialState = [
   { id: '1', title: 'a', content: 'a' },
@@ -26,7 +26,7 @@ const postsSlice = createSlice({
             id: nanoid(),
             ...newPost,
             // in this case can change the data easliy, new added date
-            date: format(new Date())
+            date: new Date()
           }
         }
       }
