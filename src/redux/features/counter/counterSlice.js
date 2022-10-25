@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { act } from "react-dom/test-utils"
 
 const initialState = {
   count: 0
@@ -16,10 +17,13 @@ const counterSlice = createSlice({
     },
     reset: (state) => {
       return initialState
+    },
+    incrementByAmount: (state, action) => {
+      state.count += action.payload
     }
   }
 })
 
-export const { increment, decrement, reset } = counterSlice.actions
+export const { increment, decrement, reset, incrementByAmount } = counterSlice.actions
 
 export default counterSlice.reducer
