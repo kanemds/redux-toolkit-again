@@ -4,8 +4,29 @@ import { sub } from "date-fns"
 
 
 const initialState = [
-  { id: '1', userId: '1', title: 'a', content: 'a', date: sub(new Date(), { minutes: 10 }).toISOString() },
-  { id: '2', userId: '3', title: 'b', content: 'b', date: sub(new Date(), { minutes: 40 }).toISOString() },
+  {
+    id: '1', userId: '1', title: 'a', content: 'a',
+    date: sub(new Date(), { minutes: 10 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      wow: 0,
+      heart: 0,
+      rocket: 0,
+      coffee: 0
+    }
+  },
+
+  {
+    id: '2', userId: '3', title: 'b', content: 'b',
+    date: sub(new Date(), { minutes: 40 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      wow: 0,
+      heart: 0,
+      rocket: 0,
+      coffee: 0
+    }
+  },
 ]
 
 const postsSlice = createSlice({
@@ -27,9 +48,23 @@ const postsSlice = createSlice({
             id: nanoid(),
             ...newPost,
             // in this case can change the data easliy, new added date
-            date: new Date().toISOString()
+            date: new Date().toISOString(),
+            reactions: {
+              thumbsUp: 0,
+              wow: 0,
+              heart: 0,
+              rocket: 0,
+              coffee: 0
+            }
           }
         }
+      }
+    },
+    addedReaction(state, action) {
+      const { postId, reaction } = action.payload
+      const existingPost = state.find(post => post.id === postId)
+      if (existingPost) {
+        existingPost.reactions[reaction]++
       }
     }
   }
@@ -37,5 +72,5 @@ const postsSlice = createSlice({
 
 export const selectAllPosts = (state) => state.posts
 
-export const { addedNewPost } = postsSlice.actions
+export const { addedNewPost, addedReaction } = postsSlice.actions
 export default postsSlice.reducer
