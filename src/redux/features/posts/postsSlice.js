@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { nanoid } from '@reduxjs/toolkit'
+import { sub } from "date-fns"
 
 
 const initialState = [
-  { id: '1', title: 'a', content: 'a' },
-  { id: '2', title: 'b', content: 'b' },
+  { id: '1', title: 'a', content: 'a', date: sub(new Date(), { minutes: 10 }).toISOString() },
+  { id: '2', title: 'b', content: 'b', date: sub(new Date(), { minutes: 40 }).toISOString() },
 ]
 
 const postsSlice = createSlice({
@@ -26,7 +27,7 @@ const postsSlice = createSlice({
             id: nanoid(),
             ...newPost,
             // in this case can change the data easliy, new added date
-            date: new Date()
+            date: new Date().toISOString()
           }
         }
       }

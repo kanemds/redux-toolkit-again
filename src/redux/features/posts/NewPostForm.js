@@ -31,7 +31,6 @@ const NewPostForm = () => {
   }
 
 
-
   const isValidate = Boolean(newPost.title) && Boolean(newPost.content) && Boolean(newPost.userId)
 
 
