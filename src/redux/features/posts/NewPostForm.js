@@ -2,14 +2,13 @@ import React from 'react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addedNewPost } from './postsSlice'
-import { nanoid } from '@reduxjs/toolkit'
+
 
 const NewPostForm = () => {
 
   const dispatch = useDispatch()
 
   const [newPost, setNewPost] = useState({
-    id: "",
     title: "",
     content: ""
   })
@@ -17,9 +16,11 @@ const NewPostForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    dispatch(addedNewPost({ ...newPost, id: nanoid() }))
+    // case 1
+    // dispatch(addedNewPost({ ...newPost, id: nanoid() }))
+    dispatch(addedNewPost(newPost))
+
     setNewPost({
-      id: "",
       title: "",
       content: ""
     })
