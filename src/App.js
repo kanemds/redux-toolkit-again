@@ -1,10 +1,11 @@
 import './App.css'
-import Counter from './redux/features/counter/Counter'
+import PostsList from './redux/features/posts/PostsList'
+
 
 function App() {
   return (
     <div className="App">
-      <Counter />
+      <PostsList />
     </div>
   )
 }
