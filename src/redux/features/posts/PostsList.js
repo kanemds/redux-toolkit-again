@@ -9,7 +9,9 @@ const PostsList = () => {
   // by exporting selectAllPosts, prevent future changes on the slice
   const posts = useSelector(selectAllPosts)
 
-  const renderPosts = posts.map(post =>
+  const newest = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+
+  const renderPosts = newest.map(post =>
     <article key={post.id}>
       <h3>{post.title}</h3>
       <p>{post.content.substring(0, 100)}</p>
