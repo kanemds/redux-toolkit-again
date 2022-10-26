@@ -1,33 +1,43 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import PostAuth from './PostAuth'
-import { selectAllPosts } from './postsSlice'
-import ReactionsButton from './ReactionsButton'
-import TimeAgo from './TimeAgo'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import PostsExcerpt from './PostsExcerpt'
+
+import { selectAllPosts, getPostsError, getPostsStatus, fetchPosts } from './postsSlice'
+
 
 const PostsList = () => {
 
+  const dispatch = useDispatch()
+
   // by exporting selectAllPosts, prevent future changes on the slice
   const posts = useSelector(selectAllPosts)
+  const postStatus = useSelector(getPostsStatus)
+  const postError = useSelector(getPostsError)
 
-  const newest = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+  useEffect(() => {
+    if (postStatus === 'idle') {
+      dispatch(fetchPosts())
+    }
+  }, [postStatus, dispatch])
 
-  const renderPosts = newest.map(post =>
-    <article key={post.id}>
-      <h3>{post.title}</h3>
-      <p>{post.content.substring(0, 100)}</p>
-      <p className='postCredit'>
-        <PostAuth userId={post.userId} />
-        <TimeAgo timestamp={post.date} />
-      </p>
-      <ReactionsButton post={post} />
-    </article>
-  )
+
+  let content
+
+  if (postStatus === 'loading') {
+    content = <p>"Loading..."</p>
+  } else if (postStatus === 'succeeded') {
+    const newest = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+    content = newest.map(post => <PostsExcerpt key={post.id} post={post} />)
+  } else if (postStatus === 'failed') {
+    content = <p>{postError}</p>
+  }
+
 
   return (
     <div>
       <h2>Posts</h2>
-      {renderPosts}
+      {content}
     </div>
   )
 }
