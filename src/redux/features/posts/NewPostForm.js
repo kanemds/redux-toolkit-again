@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { allUsers } from '../users/userSlice'
-import { addedNewPost } from './postsSlice'
+import { addPost } from './postsSlice'
 
 
 const NewPostForm = () => {
@@ -15,23 +15,32 @@ const NewPostForm = () => {
     content: "",
     userId: ''
   })
+  const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
+  // const isValidate = Boolean(newPost.title) && Boolean(newPost.content) && Boolean(newPost.userId)
+  const isValidate = [newPost.title, newPost.content, newPost.userId].every(Boolean) && addRequestStatus === 'idle'
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // case 1
-    // dispatch(addedNewPost({ ...newPost, id: nanoid() }))
-    dispatch(addedNewPost(newPost))
-
-    setNewPost({
-      title: '',
-      content: '',
-      userId: ''
-    })
+    if (isValidate) {
+      try {
+        setAddRequestStatus('pending')
+        dispatch(addPost({ ...newPost, body: newPost.content })).unwrap()
+        setNewPost({
+          title: "",
+          content: "",
+          userId: ''
+        })
+      } catch (error) {
+        console.error(`Failed to save`, error.message)
+      } finally {
+        setAddRequestStatus('idle')
+      }
+    }
   }
 
 
-  const isValidate = Boolean(newPost.title) && Boolean(newPost.content) && Boolean(newPost.userId)
+
 
 
   const selectedUser = users.map(user =>
