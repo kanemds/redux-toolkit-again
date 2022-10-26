@@ -4,10 +4,13 @@ import { getSinglePost } from './postsSlice'
 import PostAuth from './PostAuth'
 import TimeAgo from './TimeAgo'
 import ReactionsButton from './ReactionsButton'
+import { useParams } from 'react-router-dom'
 
 const SinglePost = () => {
 
-  const post = useSelector(state => getSinglePost(state, postId))
+  const { postId } = useParams()
+
+  const post = useSelector(state => getSinglePost(state, Number(postId)))
 
   if (!post) {
     return (
