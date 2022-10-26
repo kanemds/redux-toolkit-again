@@ -18,7 +18,6 @@ root.render(
         <Route path="/*" element={<App />} />
       </Routes>
     </Router>
-
   </Provider>
   // </React.StrictMode>
 )

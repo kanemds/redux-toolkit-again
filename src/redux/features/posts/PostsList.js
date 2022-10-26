@@ -36,7 +36,6 @@ const PostsList = () => {
 
   return (
     <div>
-      <h2>Posts</h2>
       {content}
     </div>
   )
