@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getSinglePost } from './postsSlice'
+import { getSinglePostByPostId } from './postsSlice'
 import PostAuth from './PostAuth'
 import TimeAgo from './TimeAgo'
 import ReactionsButton from './ReactionsButton'
@@ -10,7 +10,7 @@ const SinglePost = () => {
 
   const { postId } = useParams()
 
-  const post = useSelector(state => getSinglePost(state, Number(postId)))
+  const post = useSelector(state => getSinglePostByPostId(state, Number(postId)))
 
   if (!post) {
     return (
