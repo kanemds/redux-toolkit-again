@@ -21,6 +21,7 @@ const EditPost = () => {
     userId: post.userId
   })
 
+
   const [requestStatus, setRequestStatus] = useState('idle')
 
   if (!post) {
@@ -96,7 +97,8 @@ const EditPost = () => {
           onChange={e => setEdit({ ...edit, title: e.target.value })}
         />
         <label htmlFor='author'>Author:</label>
-        <select id='author' value={edit.userId} onChange={e => setEdit({ ...edit, userId: e.target.value })}>          <option value=''></option>
+        <select id='author' value={edit.userId} onChange={e => setEdit({ ...edit, userId: Number(e.target.value) })}>
+          <option value=''></option>
           {usersOptions}
         </select>
         <label htmlFor='postContent'>Content:</label>
