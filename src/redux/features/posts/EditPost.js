@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { allUsers } from '../users/userSlice'
-import { getSinglePost, updatePost, deletePost } from './postsSlice'
+import { getSinglePostByPostId, updatePost, deletePost } from './postsSlice'
 import axios from 'axios'
 
 const EditPost = () => {
@@ -12,7 +12,7 @@ const EditPost = () => {
   const { postId } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const post = useSelector(state => getSinglePost(state, Number(postId)))
+  const post = useSelector(state => getSinglePostByPostId(state, Number(postId)))
   const users = useSelector(allUsers)
 
   const [edit, setEdit] = useState({

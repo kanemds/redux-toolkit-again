@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit"
 import { nanoid } from '@reduxjs/toolkit'
 import { sub } from "date-fns"
 import axios from "axios"
@@ -160,8 +160,17 @@ const postsSlice = createSlice({
 export const selectAllPosts = (state) => state.posts.posts
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
-export const getSinglePost = (state, postId) => state.posts.posts.find(post => post.id === postId)
 
+// case 1
+export const getSinglePostByPostId = (state, postId) => state.posts.posts.find(post => post.id === postId)
+
+export const getSinglePostByUserId = createSelector(
+  // input can be array or a, b, 
+  // check if one of the input values change will render output
+  [selectAllPosts, (state, userId) => userId],
+  // output result
+  (posts, userId) => posts.filter(post => post.userId === userId)
+)
 
 export const { addedNewPost, addedReaction } = postsSlice.actions
 export default postsSlice.reducer
