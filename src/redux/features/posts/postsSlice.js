@@ -29,6 +29,30 @@ export const addPost = createAsyncThunk('posts/addPost', async (initialPost) => 
   }
 })
 
+export const updatePost = createAsyncThunk('posts/updatePost', async (updatePost) => {
+
+  // getting the id from the edit from data
+  const { id } = updatePost
+
+  try {
+    const res = await axios.put(`${POSTS_URL}/${id}`, updatePost)
+    return res.data
+  } catch (error) {
+    return error.message
+  }
+})
+
+export const deletePost = createAsyncThunk('posts/deletePost', async (deletePost) => {
+  const { id } = deletePost
+
+  try {
+    const res = await axios.delete(`${POSTS_URL}/${id}`)
+    if (res?.status === 200) return deletePost
+    return `${res?.status}: ${res?.statusText}`
+  } catch (error) {
+    return error.message
+  }
+})
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -108,6 +132,28 @@ const postsSlice = createSlice({
         console.log(action.payload)
         state.posts.push(action.payload)
       })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        if (!action.payload?.id) {
+          console.log('Update Error')
+          console.log(action.payload)
+          return
+        }
+        const { id } = action.payload
+        action.payload.date = new Date().toISOString()
+        const posts = state.posts.filter(post => post.id !== id)
+        state.posts = [...posts, action.payload]
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        if (!action.payload?.id) {
+          console.log('Delete Error')
+          console.log(action.payload)
+          return
+        }
+        const { id } = action.payload
+        const posts = state.posts.filter(post => post.id !== id)
+        state.posts = posts
+      })
+
   }
 })
 

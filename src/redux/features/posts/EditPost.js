@@ -1,9 +1,11 @@
 import React from 'react'
+import { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { allUsers } from '../users/userSlice'
-import { getSinglePost, updatePost } from './postsSlice'
+import { getSinglePost, updatePost, deletePost } from './postsSlice'
+import axios from 'axios'
 
 const EditPost = () => {
 
@@ -29,7 +31,7 @@ const EditPost = () => {
     )
   }
 
-  const isValidate = [edit.title, edit.content, edit.useId].every(Boolean) && requestStatus === 'idle'
+  const isValidate = [edit.title, edit.content, edit.userId].every(Boolean) && requestStatus === 'idle'
 
   const hanldeSave = () => {
     if (isValidate) {
@@ -53,13 +55,32 @@ const EditPost = () => {
   }
 
   const usersOptions = users.map(user =>
-    <optioin
+    <option
       key={user.id}
       value={user.id}
     >
       {user.name}
-    </optioin>
+    </option>
   )
+
+  const handleDelete = () => {
+    try {
+      setRequestStatus('pending')
+      dispatch(deletePost({ id: post.id })).unwrap()
+      setEdit({
+        title: '',
+        content: '',
+        userId: ''
+      })
+      navigate('/')
+    } catch (error) {
+      console.error('Delete Error', error)
+    }
+    finally {
+      setRequestStatus('idle')
+    }
+  }
+
 
   return (
     <section>
@@ -71,12 +92,11 @@ const EditPost = () => {
           type='text'
           id="postTitle"
           name='postTitle'
-          value={edit.title}
+          value={edit?.title}
           onChange={e => setEdit({ ...edit, title: e.target.value })}
         />
         <label htmlFor='author'>Author:</label>
-        <select id='author' value={edit.userId} defaultValue={edit.userId} onChange={e => setEdit({ ...edit, userId: e.target.value })}>
-          <option value=''></option>
+        <select id='author' value={edit.userId} onChange={e => setEdit({ ...edit, userId: e.target.value })}>          <option value=''></option>
           {usersOptions}
         </select>
         <label htmlFor='postContent'>Content:</label>
@@ -93,6 +113,12 @@ const EditPost = () => {
           onClick={hanldeSave}
           disabled={!isValidate}
         > Save</button>
+        <button
+          className='deleteButton'
+          type='button'
+          onClick={handleDelete}>
+          Delete
+        </button>
       </form>
 
     </section >

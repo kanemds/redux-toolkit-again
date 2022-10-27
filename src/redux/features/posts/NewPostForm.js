@@ -1,6 +1,8 @@
+import { nanoid } from '@reduxjs/toolkit'
 import React from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { allUsers } from '../users/userSlice'
 import { addPost } from './postsSlice'
 
@@ -8,9 +10,11 @@ import { addPost } from './postsSlice'
 const NewPostForm = () => {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const users = useSelector(allUsers)
 
   const [newPost, setNewPost] = useState({
+
     title: "",
     content: "",
     userId: ''
@@ -31,6 +35,7 @@ const NewPostForm = () => {
           content: "",
           userId: ''
         })
+        navigate('/')
       } catch (error) {
         console.error(`Failed to save`, error.message)
       } finally {
@@ -38,10 +43,6 @@ const NewPostForm = () => {
       }
     }
   }
-
-
-
-
 
   const selectedUser = users.map(user =>
     <option key={user.id} value={user.id}>
