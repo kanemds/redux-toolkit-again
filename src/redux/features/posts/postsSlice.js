@@ -127,7 +127,7 @@ const postsSlice = createSlice({
         })
         // case One
         // state.posts = state.posts.concat(loadedPosts)
-        postsAdapter.updateMany(state, loadedPosts)
+        postsAdapter.upsertMany(state, loadedPosts)
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
