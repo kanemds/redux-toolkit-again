@@ -1,15 +1,25 @@
-import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, createSelector, createEntityAdapter } from "@reduxjs/toolkit"
 import { nanoid } from '@reduxjs/toolkit'
 import { sub } from "date-fns"
 import axios from "axios"
 const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
 
+const postsAdapter = createEntityAdapter({
+  // sorting the date
+  sortComparer: (a, b) => b.date.localeCompare(a.date)
+})
 
-const initialState = {
-  posts: [],
+// case One
+// const initialState = {
+//   posts: [],
+//   status: 'idle', // idel | loading | succeeded | failed
+//   error: null
+// }
+
+const initialState = postsAdapter.getInitialState({
   status: 'idle', // idel | loading | succeeded | failed
   error: null
-}
+})
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   try {
@@ -87,7 +97,9 @@ const postsSlice = createSlice({
     },
     addedReaction(state, action) {
       const { postId, reaction } = action.payload
-      const existingPost = state.posts.find(post => post.id === postId)
+      // case one
+      // const existingPost = state.posts.find(post => post.id === postId)
+      const existingPost = state.entities[postId]
       if (existingPost) {
         existingPost.reactions[reaction]++
       }
@@ -113,7 +125,9 @@ const postsSlice = createSlice({
           }
           return post
         })
-        state.posts = state.posts.concat(loadedPosts)
+        // case One
+        // state.posts = state.posts.concat(loadedPosts)
+        postsAdapter.updateMany(state, loadedPosts)
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
@@ -129,8 +143,10 @@ const postsSlice = createSlice({
           rocket: 0,
           coffee: 0
         }
-        console.log(action.payload)
-        state.posts.push(action.payload)
+        // case One
+        // console.log(action.payload)
+        // state.posts.push(action.payload)
+        postsAdapter.addOne(state, action.payload)
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         if (!action.payload?.id) {
@@ -138,10 +154,12 @@ const postsSlice = createSlice({
           console.log(action.payload)
           return
         }
-        const { id } = action.payload
+        // const { id } = action.payload
         action.payload.date = new Date().toISOString()
-        const posts = state.posts.filter(post => post.id !== id)
-        state.posts = [...posts, action.payload]
+        // const posts = state.posts.filter(post => post.id !== id)
+        // case One
+        // state.posts = [...posts, action.payload]
+        postsAdapter.upsertOne(state, action.payload)
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         if (!action.payload?.id) {
@@ -150,19 +168,31 @@ const postsSlice = createSlice({
           return
         }
         const { id } = action.payload
-        const posts = state.posts.filter(post => post.id !== id)
-        state.posts = posts
+        // const posts = state.posts.filter(post => post.id !== id)
+        // case One
+        // state.posts = posts
+        postsAdapter.removeOne(state, id)
       })
 
   }
 })
 
-export const selectAllPosts = (state) => state.posts.posts
+// case One 
+// export const selectAllPosts = (state) => state.posts.posts
+// export const getSinglePostByPostId = (state, postId) => state.posts.posts.find(post => post.id === postId)
+
+export const {
+  selectAll: selectAllPosts,
+  selectById: getSinglePostByPostId,
+  selectIds: selectPostIds
+} = postsAdapter.getSelectors(state => state.posts)
+
+
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
 
 // case 1
-export const getSinglePostByPostId = (state, postId) => state.posts.posts.find(post => post.id === postId)
+
 
 export const getSinglePostByUserId = createSelector(
   // input can be array or a, b, 
